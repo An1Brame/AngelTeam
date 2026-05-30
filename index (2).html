@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Angels Team — Хаус</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --white: #f5f0eb;
+    --cream: #ede8e0;
+    --silver: #c8c0b8;
+    --smoke: #9a9590;
+    --charcoal: #2a2520;
+    --deep: #1a1510;
+    --accent: #d4c8bc;
+    --glow: rgba(212, 200, 188, 0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--deep);
+    color: var(--white);
+    font-family: 'Cormorant Garamond', serif;
+    overflow-x: hidden;
+  }
+
+  /* ─── PARTICLES ─── */
+  #particles {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: var(--silver);
+    border-radius: 50%;
+    opacity: 0;
+    animation: float-up var(--dur) ease-in infinite;
+    animation-delay: var(--delay);
+    left: var(--x);
+  }
+  @keyframes float-up {
+    0%   { opacity: 0; transform: translateY(100vh) scale(0); }
+    20%  { opacity: 0.6; }
+    80%  { opacity: 0.3; }
+    100% { opacity: 0; transform: translateY(-10vh) scale(1.5); }
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(200,192,184,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .wings-bg {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.05;
+    pointer-events: none;
+  }
+  .wings-bg svg {
+    width: 90vmin;
+    height: 90vmin;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    color: var(--silver);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fade-up 1s ease 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(3.5rem, 10vw, 8rem);
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    color: var(--white);
+    opacity: 0;
+    animation: fade-up 1s ease 0.5s forwards;
+  }
+  .hero-title span {
+    display: block;
+    background: linear-gradient(135deg, var(--white) 0%, var(--silver) 50%, var(--white) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    margin-top: 1.5rem;
+    font-size: 1.25rem;
+    font-style: italic;
+    color: var(--silver);
+    letter-spacing: 0.08em;
+    opacity: 0;
+    animation: fade-up 1s ease 0.7s forwards;
+  }
+
+  .hero-divider {
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--silver), transparent);
+    margin: 2rem auto;
+    opacity: 0;
+    animation: fade-up 1s ease 0.9s forwards;
+  }
+
+  .hero-cta {
+    display: inline-block;
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--charcoal);
+    background: var(--white);
+    padding: 0.85rem 2.5rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    opacity: 0;
+    animation: fade-up 1s ease 1.1s forwards;
+  }
+  .hero-cta:hover {
+    background: var(--silver);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+    animation: fade-up 1s ease 1.5s forwards;
+  }
+  .scroll-hint span {
+    font-family: 'Cinzel', serif;
+    font-size: 0.55rem;
+    letter-spacing: 0.35em;
+    color: var(--smoke);
+    text-transform: uppercase;
+  }
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(180deg, var(--smoke), transparent);
+    animation: scroll-pulse 2s ease-in-out infinite;
+  }
+  @keyframes scroll-pulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.2); }
+  }
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 1.5rem 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background 0.4s ease;
+  }
+  nav.scrolled {
+    background: rgba(26, 21, 16, 0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(200,192,184,0.1);
+  }
+  .nav-logo {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    color: var(--white);
+    text-decoration: none;
+  }
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--silver);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--white); }
+
+  /* ─── SECTIONS ─── */
+  section {
+    position: relative;
+    z-index: 1;
+    padding: 6rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--smoke);
+    margin-bottom: 0.75rem;
+  }
+
+  .section-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-divider {
+    width: 50px;
+    height: 1px;
+    background: var(--silver);
+    margin-bottom: 3rem;
+  }
+
+  /* ─── ABOUT ─── */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+  }
+  .about-text p {
+    font-size: 1.15rem;
+    line-height: 1.9;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .feather-art {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.6;
+  }
+  .feather-art svg { width: 100%; max-width: 300px; }
+
+  /* ─── RULES ─── */
+  .rules-section {
+    background: rgba(200,192,184,0.03);
+    border: 1px solid rgba(200,192,184,0.08);
+    padding: 5rem 3rem;
+    max-width: 100%;
+    margin: 0;
+  }
+  .rules-section > * { max-width: 1100px; margin-left: auto; margin-right: auto; }
+
+  .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .rule-card {
+    border: 1px solid rgba(200,192,184,0.12);
+    padding: 2rem;
+    position: relative;
+    transition: border-color 0.3s, transform 0.3s;
+    cursor: default;
+  }
+  .rule-card:hover {
+    border-color: rgba(200,192,184,0.35);
+    transform: translateY(-4px);
+  }
+  .rule-card::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: -1px; right: -1px; bottom: -1px;
+    background: linear-gradient(135deg, rgba(200,192,184,0.06), transparent);
+    pointer-events: none;
+  }
+  .rule-number {
+    font-family: 'Cinzel', serif;
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: rgba(200,192,184,0.15);
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+  .rule-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--silver);
+    margin-bottom: 0.75rem;
+  }
+  .rule-desc {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--smoke);
+  }
+  .rule-penalty {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    font-style: italic;
+    color: rgba(200,192,184,0.5);
+  }
+
+  /* ─── SCHEDULE ─── */
+  .schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .schedule-table tr {
+    border-bottom: 1px solid rgba(200,192,184,0.1);
+    transition: background 0.2s;
+  }
+  .schedule-table tr:hover { background: rgba(200,192,184,0.04); }
+  .schedule-table td {
+    padding: 1.2rem 1rem;
+    font-size: 1.05rem;
+  }
+  .schedule-table td:first-child {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--silver);
+    width: 180px;
+  }
+  .schedule-table td:last-child { color: var(--smoke); }
+  .badge {
+    display: inline-block;
+    background: rgba(200,192,184,0.12);
+    border: 1px solid rgba(200,192,184,0.2);
+    color: var(--silver);
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.7rem;
+    margin-left: 0.5rem;
+  }
+  .badge.shoot { background: rgba(212,200,188,0.15); }
+  .badge.clean { background: rgba(150,140,130,0.15); }
+
+  /* ─── ANKET ─── */
+  .anket-section {
+    text-align: center;
+  }
+  .anket-box {
+    display: inline-block;
+    border: 1px solid rgba(200,192,184,0.2);
+    padding: 3rem 4rem;
+    margin-top: 2rem;
+    position: relative;
+    text-align: left;
+    max-width: 600px;
+    width: 100%;
+  }
+  .anket-box::before {
+    content: '✦';
+    position: absolute;
+    top: -0.7rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--deep);
+    padding: 0 0.5rem;
+    color: var(--silver);
+    font-size: 0.8rem;
+  }
+  .anket-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(200,192,184,0.08);
+  }
+  .anket-item:last-child { border-bottom: none; }
+  .anket-num {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    color: var(--smoke);
+    letter-spacing: 0.1em;
+    min-width: 2rem;
+    margin-top: 0.15rem;
+  }
+  .anket-field {
+    font-size: 1.05rem;
+    color: var(--accent);
+  }
+  .anket-note {
+    font-size: 0.85rem;
+    color: var(--smoke);
+    font-style: italic;
+    margin-top: 0.25rem;
+  }
+
+  .send-to {
+    margin-top: 2.5rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--smoke);
+  }
+  .send-to a {
+    color: var(--white);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(200,192,184,0.3);
+    padding-bottom: 1px;
+    transition: border-color 0.3s;
+  }
+  .send-to a:hover { border-color: var(--white); }
+
+  /* ─── ADMIN ─── */
+  .admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+  .admin-card {
+    border: 1px solid rgba(200,192,184,0.1);
+    padding: 1.5rem;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .admin-card:hover {
+    border-color: rgba(200,192,184,0.3);
+    transform: translateY(-3px);
+  }
+  .admin-role {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--smoke);
+    margin-bottom: 0.5rem;
+  }
+  .admin-name {
+    font-size: 1.1rem;
+    color: var(--white);
+  }
+  .admin-name a {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(200,192,184,0.2);
+    transition: border-color 0.3s;
+  }
+  .admin-name a:hover { border-color: var(--white); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 4rem 2rem;
+    border-top: 1px solid rgba(200,192,184,0.08);
+  }
+  footer .footer-logo {
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem;
+    font-weight: 900;
+    letter-spacing: 0.2em;
+    color: var(--white);
+    margin-bottom: 1rem;
+  }
+  footer p {
+    font-size: 0.85rem;
+    color: var(--smoke);
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── SEPARATOR ─── */
+  .wing-sep {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 0;
+    gap: 2rem;
+    opacity: 0.25;
+  }
+  .wing-sep::before, .wing-sep::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--silver));
+  }
+  .wing-sep::after {
+    background: linear-gradient(90deg, var(--silver), transparent);
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .feather-art { display: none; }
+    .anket-box { padding: 2rem; }
+    section { padding: 4rem 1.5rem; }
+    .rules-section { padding: 4rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Floating particles -->
+<div id="particles"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">✦ ANGELS TEAM</a>
+  <ul class="nav-links">
+    <li><a href="#about">О нас</a></li>
+    <li><a href="#rules">Правила</a></li>
+    <li><a href="#schedule">График</a></li>
+    <li><a href="#join">Вступить</a></li>
+    <li><a href="#admin">Команда</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="wings-bg">
+    <svg viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Left wing -->
+      <path d="M200 150 C160 120, 80 100, 20 140 C60 130, 100 140, 140 160 C100 145, 50 155, 10 180 C50 165, 100 170, 150 175 C110 170, 60 185, 20 210 C60 195, 110 195, 155 190 C130 200, 90 215, 60 240 C95 225, 135 220, 165 210 C150 225, 130 245, 110 265 C135 250, 160 238, 180 225 C170 240, 162 260, 158 280 C170 262, 178 242, 185 222 L190 280 C192 258, 193 235, 194 215 L200 150Z" fill="white"/>
+      <!-- Right wing -->
+      <path d="M200 150 C240 120, 320 100, 380 140 C340 130, 300 140, 260 160 C300 145, 350 155, 390 180 C350 165, 300 170, 250 175 C290 170, 340 185, 380 210 C340 195, 290 195, 245 190 C270 200, 310 215, 340 240 C305 225, 265 220, 235 210 C250 225, 270 245, 290 265 C265 250, 240 238, 220 225 C230 240, 238 260, 242 280 C230 262, 222 242, 215 222 L210 280 C208 258, 207 235, 206 215 L200 150Z" fill="white"/>
+    </svg>
+  </div>
+
+  <p class="hero-eyebrow">Roblox House</p>
+  <h1 class="hero-title">
+    <span>Angels</span>
+    <span>Team</span>
+  </h1>
+  <p class="hero-sub">— место, где ангелы находят свой дом —</p>
+  <div class="hero-divider"></div>
+  <a href="#join" class="hero-cta">Вступить в хаус</a>
+
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-grid">
+    <div class="about-text">
+      <p class="section-label">О нас</p>
+      <h2 class="section-title">Хаус<br>Ангел Тим</h2>
+      <div class="section-divider"></div>
+      <p>Мы — дружное сообщество в Roblox, объединённое одной идеей: создать тёплое место для тех, кто хочет общаться, творить и расти вместе.</p>
+      <p>У нас есть традиции, правила и своя атмосфера — лёгкая, как перо ангела. Мы ценим каждого участника и строим настоящую команду.</p>
+    </div>
+    <div class="feather-art">
+      <svg viewBox="0 0 200 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M100 10 C100 10, 160 60, 155 140 C150 200, 120 260, 100 310" stroke="rgba(200,192,184,0.6)" stroke-width="1.5" fill="none"/>
+        <path d="M100 40 C100 40, 145 65, 148 110" stroke="rgba(200,192,184,0.35)" stroke-width="1" fill="none"/>
+        <path d="M100 70 C100 70, 148 90, 150 130" stroke="rgba(200,192,184,0.3)" stroke-width="1" fill="none"/>
+        <path d="M100 100 C100 100, 148 115, 148 152" stroke="rgba(200,192,184,0.25)" stroke-width="1" fill="none"/>
+        <path d="M100 130 C100 130, 145 142, 143 172" stroke="rgba(200,192,184,0.2)" stroke-width="1" fill="none"/>
+        <path d="M100 160 C100 160, 138 170, 135 195" stroke="rgba(200,192,184,0.18)" stroke-width="1" fill="none"/>
+        <path d="M100 40 C100 40, 55 65, 52 110" stroke="rgba(200,192,184,0.35)" stroke-width="1" fill="none"/>
+        <path d="M100 70 C100 70, 52 90, 50 130" stroke="rgba(200,192,184,0.3)" stroke-width="1" fill="none"/>
+        <path d="M100 100 C100 100, 52 115, 52 152" stroke="rgba(200,192,184,0.25)" stroke-width="1" fill="none"/>
+        <path d="M100 130 C100 130, 55 142, 57 172" stroke="rgba(200,192,184,0.2)" stroke-width="1" fill="none"/>
+        <path d="M100 160 C100 160, 62 170, 65 195" stroke="rgba(200,192,184,0.18)" stroke-width="1" fill="none"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<div class="wing-sep">✦</div>
+
+<!-- RULES -->
+<div class="rules-section" id="rules">
+  <section style="padding: 0;">
+    <p class="section-label">Устав</p>
+    <h2 class="section-title">Правила хауса</h2>
+    <div class="section-divider"></div>
+  </section>
+  <div class="rules-grid">
+    <div class="rule-card">
+      <div class="rule-number">01</div>
+      <div class="rule-title">Оскорбления</div>
+      <div class="rule-desc">Оскорбление участников, администраторов, родителей и т.д. строго запрещено. В шутку — если человек понял, наказание не выдаётся.</div>
+      <div class="rule-penalty">⚠ Наказание: мут 1 час</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-number">02</div>
+      <div class="rule-title">Спам</div>
+      <div class="rule-desc">Спам в чате запрещён. Спамом считаются стикеры, сообщения, кружки — 3 раза подряд.</div>
+      <div class="rule-penalty">⚠ Наказание: мут 2 часа + варн</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-number">03</div>
+      <div class="rule-title">18+ контент</div>
+      <div class="rule-desc">Любой контент 18+ запрещён. Сюда входят сцены насилия, издевательства и подобное.</div>
+      <div class="rule-penalty">⚠ Наказание: мут 2 часа / бан</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-number">04</div>
+      <div class="rule-title">Ссоры в чате</div>
+      <div class="rule-desc">Ссоры запрещены. Если возникла ссора — разрешайте её в ЛС или зовите владельца.</div>
+      <div class="rule-penalty">⚠ Наказание: мут 30 минут всем участникам</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-number">05</div>
+      <div class="rule-title">Язык общения</div>
+      <div class="rule-desc">Большинство в хаусе — русскоязычные. Просьба разговаривать на русском языке.</div>
+      <div class="rule-penalty">⚠ Наказание: мут 10 минут</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-number">06</div>
+      <div class="rule-title">Общение с друзьями</div>
+      <div class="rule-desc">Общаемся в чате со всеми, а не только друг с другом. Для личного общения есть ЛС.</div>
+      <div class="rule-penalty">Незнание правил не освобождает от ответственности</div>
+    </div>
+  </div>
+</div>
+
+<div class="wing-sep">✦</div>
+
+<!-- SCHEDULE -->
+<section id="schedule">
+  <p class="section-label">Расписание</p>
+  <h2 class="section-title">График коллабов</h2>
+  <div class="section-divider"></div>
+  <table class="schedule-table">
+    <tr><td>Понедельник</td><td>Выходной</td></tr>
+    <tr><td>Вторник</td><td>Выходной</td></tr>
+    <tr><td>Среда</td><td>Выходной</td></tr>
+    <tr><td>Четверг</td><td>Выходной</td></tr>
+    <tr><td>Пятница</td><td>Выходной</td></tr>
+    <tr><td>Суббота</td><td><span class="badge shoot">Съёмки</span></td></tr>
+    <tr><td>Воскресенье</td><td><span class="badge shoot">Съёмки</span> <span class="badge clean">Чистка</span></td></tr>
+  </table>
+  <p style="margin-top:2rem; font-style:italic; color:var(--smoke); font-size:0.95rem;">
+    Съёмки проводятся в <strong style="color:var(--silver)">19:00 по МСК</strong>. Чистка каждое воскресенье в <strong style="color:var(--silver)">21:30 по МСК</strong>.
+  </p>
+  <p style="margin-top:1rem; color:var(--smoke); font-size:0.9rem;">
+    Россия 19:00 · Украина 19:00 · Казахстан 21:00 · США 16:00 · Армения 20:00 · Германия 18:00
+  </p>
+  <br>
+  <p style="color:var(--smoke); font-size:0.95rem;">Норма активности: <strong style="color:var(--silver)">150 сообщений в неделю</strong>. Если вы нью и чистка через 2 дня — норму набирать не нужно.</p>
+</section>
+
+<div class="wing-sep">✦</div>
+
+<!-- REST RULES -->
+<section>
+  <p class="section-label">Отдых</p>
+  <h2 class="section-title">Правила реста</h2>
+  <div class="section-divider"></div>
+  <div class="rules-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
+    <div class="rule-card"><div class="rule-number">01</div><div class="rule-desc">Рест нельзя брать, если вы в хаусе меньше 2 недель.</div></div>
+    <div class="rule-card"><div class="rule-number">02</div><div class="rule-desc">Рест можно брать 2 раза в месяц.</div></div>
+    <div class="rule-card"><div class="rule-number">03</div><div class="rule-desc">Нельзя брать рест перед чисткой и за день до чистки, а если взяли — нужна уважительная причина.</div></div>
+    <div class="rule-card"><div class="rule-number">04</div><div class="rule-desc">Когда берёте рест — укажите причину. Личную можно не указывать.</div></div>
+    <div class="rule-card"><div class="rule-number">05</div><div class="rule-desc">Находясь в ресте, вы не сможете писать в чат до своего срока.</div></div>
+  </div>
+  <p style="margin-top:2rem; font-family:'Cinzel',serif; font-size:0.7rem; letter-spacing:0.25em; color:var(--smoke);">
+    Брать рест у владельца: <a href="https://t.me/kikiiijj" style="color:var(--white); text-decoration:none; border-bottom:1px solid rgba(200,192,184,0.3);">@kikiiijj</a>
+  </p>
+</section>
+
+<div class="wing-sep">✦</div>
+
+<!-- JOIN -->
+<section id="join" class="anket-section">
+  <p class="section-label">Вступление</p>
+  <h2 class="section-title">Анкета</h2>
+  <div class="section-divider" style="margin:0 auto 2rem;"></div>
+  <div class="anket-box">
+    <div class="anket-item">
+      <span class="anket-num">01</span>
+      <div>
+        <div class="anket-field">Ваше имя / псевдоним</div>
+      </div>
+    </div>
+    <div class="anket-item">
+      <span class="anket-num">02</span>
+      <div>
+        <div class="anket-field">Возраст</div>
+        <div class="anket-note">Ограничения нет — не указываем для вашего блага</div>
+      </div>
+    </div>
+    <div class="anket-item">
+      <span class="anket-num">03</span>
+      <div>
+        <div class="anket-field">Часовой пояс</div>
+      </div>
+    </div>
+    <div class="anket-item">
+      <span class="anket-num">04</span>
+      <div>
+        <div class="anket-field">Ваш скин в Roblox</div>
+      </div>
+    </div>
+    <div class="anket-item">
+      <span class="anket-num">05</span>
+      <div>
+        <div class="anket-field">Актив?</div>
+      </div>
+    </div>
+  </div>
+  <p class="send-to" style="margin-top:2.5rem;">Анкету присылать: <a href="https://t.me/kikiiijj">@kikiiijj</a></p>
+</section>
+
+<div class="wing-sep">✦</div>
+
+<!-- ADMIN -->
+<section id="admin">
+  <p class="section-label">Команда</p>
+  <h2 class="section-title">Администрация</h2>
+  <div class="section-divider"></div>
+  <div class="admin-grid">
+    <div class="admin-card">
+      <div class="admin-role">Владелец</div>
+      <div class="admin-name"><a href="https://t.me/kikiiijj">@kikiiijj</a></div>
+    </div>
+    <div class="admin-card">
+      <div class="admin-role">Совладелец</div>
+      <div class="admin-name">—</div>
+    </div>
+    <div class="admin-card">
+      <div class="admin-role">Старший админ</div>
+      <div class="admin-name"><a href="https://t.me/sanviv1">@sanviv1</a></div>
+    </div>
+    <div class="admin-card">
+      <div class="admin-role">Младший админ</div>
+      <div class="admin-name"><a href="https://t.me/Fifti44">@Fifti44</a></div>
+    </div>
+    <div class="admin-card">
+      <div class="admin-role">Младший админ</div>
+      <div class="admin-name"><a href="https://t.me/zovzov6959">@zovzov6959</a></div>
+    </div>
+    <div class="admin-card">
+      <div class="admin-role">Старший модер</div>
+      <div class="admin-name"><a href="https://t.me/ssqweruu">@ssqweruu</a></div>
+    </div>
+    <div class="admin-card">
+      <div class="admin-role">Младший модер</div>
+      <div class="admin-name"><a href="https://t.me/lesonese">@lesonese</a></div>
+    </div>
+    <div class="admin-card">
+      <div class="admin-role">Младший модер</div>
+      <div class="admin-name"><a href="https://t.me/Zinch_228">@Zinch_228</a></div>
+    </div>
+    <div class="admin-card">
+      <div class="admin-role">Монтажёр</div>
+      <div class="admin-name"><a href="https://t.me/Imterribl">@Imterribl</a></div>
+    </div>
+  </div>
+
+  <div style="margin-top:4rem; border:1px solid rgba(200,192,184,0.12); padding:2.5rem;">
+    <p class="section-label" style="margin-bottom:1rem;">Набор в администрацию</p>
+    <p style="color:var(--accent); font-size:1.05rem; margin-bottom:1.5rem; line-height:1.7;">Ответьте на вопросы анкеты и отправьте владельцу:</p>
+    <div style="display:flex; flex-direction:column; gap:0.75rem;">
+      <div style="color:var(--smoke);">♥ Был ли у вас опыт администратора?</div>
+      <div style="color:var(--smoke);">♥ Что будете делать при рейде?</div>
+      <div style="color:var(--smoke);">♥ Вы видите, что админ нарушает правила — ваши действия?</div>
+      <div style="color:var(--smoke);">♥ Ссора в чате — ваши действия?</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">✦ ANGELS TEAM ✦</div>
+  <p>Хаус в Roblox · 2026</p>
+  <p style="margin-top:1rem; font-size:0.95rem; color:var(--smoke);">Сайт сделал <a href="https://t.me/Sweerkx" style="color:var(--silver); text-decoration:none; border-bottom:1px solid rgba(200,192,184,0.3);">@Sweerkx</a></p>
+</footer>
+
+<script>
+  // Generate particles
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 40; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.setProperty('--x', Math.random() * 100 + 'vw');
+    p.style.setProperty('--dur', (8 + Math.random() * 14) + 's');
+    p.style.setProperty('--delay', (Math.random() * 12) + 's');
+    p.style.width = p.style.height = (1 + Math.random() * 2) + 'px';
+    container.appendChild(p);
+  }
+
+  // Nav scroll effect
+  const nav = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  });
+</script>
+</body>
+</html>
